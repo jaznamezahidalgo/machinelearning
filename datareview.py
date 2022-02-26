@@ -118,6 +118,9 @@ class DataReview(object):
       return self.data_frame.groupby(group_by)[column].aggregate(metrics)
     return self.data_frame.groupby(group_by)[column].aggregate(metrics).sort_values(by=sorted_by)
   
+  def describe_by_column(self, column : str):
+    return self.data_frame[column].describe()
+  
   def get_categorical_features(self):
     tipos = self.data_frame.columns.to_series().groupby(self.data_frame.dtypes).groups
     # Conociendo la lista de columnas categóricas
