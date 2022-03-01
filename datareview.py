@@ -130,15 +130,20 @@ class DataReview(object):
     columnas = self.data_frame.columns
     return list(set(columnas) - set(self.get_categorical_features()))  
 
-  def null_treatment(self, which='all'):
+  def null_treatment(self, which='all', replace_numeric='mean'):
     """
-      which = ['all', 'numeric', 'categorical']
+      which = 'all' | 'numeric' | 'categorical'
+      replacce_numeric = 'mean' | 'median'
     """
     if which == 'all' or which == 'numeric':
       # Completando valores faltantes datos cuantititavos
       for columna in self.get_numeric_features():
-        mean = self.data_frame[columna].mean()
-        self.data_frame[columna] = self.data_frame[columna].fillna(mean)  
+        if replace_numeric == 'mean':
+          mean = self.data_frame[columna].mean()
+          self.data_frame[columna] = self.data_frame[columna].fillna(mean)  
+        if replace_numeric == 'median':
+          median = self.data_frame[columna].median()
+          self.data_frame[columna] = self.data_frame[columna].fillna(median)           
     if which == 'all' or which == 'categorical':
       # Completando valores faltantes datos categóricos
       for columna in self.get_categorical_features():
