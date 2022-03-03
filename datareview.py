@@ -33,7 +33,7 @@ class DataReview(object):
     self.setting()
     return self
 
-  def from_data_frame(self, data :np.DataFrame):
+  def from_data_frame(self, data :pd.DataFrame):
     """ Carga un archivo desde un dataframe
     
     data DataFrame : nombre deldatafrae que desea cargar
