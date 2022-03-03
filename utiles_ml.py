@@ -9,7 +9,7 @@ Original file is located at
 
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
-import numpyas as np
+import numpy as np
 
 def selected_features(data_frame : pd.DataFrame, lst_features :np.array):
   """ Retorna un subconjunto a partir de una data

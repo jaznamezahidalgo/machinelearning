@@ -25,7 +25,7 @@ class RegressionModel(object):
   def __setattr__(self, name: str, value):
     self.__dict__[name] = value  
 
-  def split_data(self, X : array, y : array, with_scaled : bool = False, test_size : float = 0.2):
+  def split_data(self, X : np.array, y : np.array, with_scaled : bool = False, test_size : float = 0.2):
     """ Divide la data para entrenamiento y prueba
 
     X : valores X (variables independientes)
