@@ -12,6 +12,14 @@ class Visualization(object):
     self.__dict__[name] = value 
 
   def histogram(self, column :str, num_bins : int, title: str, labels : np.array):
+    """ Muestra histograma de una columna
+
+    column : nombre de columna a procesar
+    num_bins : número de barras a incluir en el gráfico
+    title : título de la gráfica
+    labels : etiquetas a incluir en la gráfica (eje X y eje Y) 
+    """
+
     # Tamaño del grafico: (ancho, largo)
     plt.figure(figsize=(8,8))
     # Definimos a Matplotlib que es un histograma con los valores de y agrupados en num_bis
@@ -25,6 +33,14 @@ class Visualization(object):
     plt.show()        
 
   def piechart_by_interval(self, title :str, column : str, exp : np.array):
+    """ Muestra un gráfico de torta de una columna usando las medidas de dispersión
+
+    title : título de la gráfica
+    column : nombre de la columna a procesar
+    exp : lista de proporciones que indica el grado de separación de la porción respecto del total
+
+    returns None
+    """
     # Obtiene los valores
     values = self.data_frame[column]
     # Obtiene los límites
@@ -52,6 +68,14 @@ class Visualization(object):
     plt.show()     
 
   def piechart(self, column : str, title : str, labels : np.array):
+    """ Muestra gráfico de torta de una columna
+
+    column : nombre de la columna a procesar
+    title : título del gráfico
+    labels : lista de las etiquetas asociadas a los valores de la columna
+
+    returns None
+    """
     plt.figure(figsize=(8,8))
     plt.pie(self.data_frame[column].value_counts(), labels = labels, autopct='%2.1f%%')
     plt.title(title, fontsize=18, fontweight="bold")

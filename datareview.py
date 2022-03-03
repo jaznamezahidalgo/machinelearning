@@ -24,35 +24,68 @@ class DataReview(object):
       self.__dict__[name] = value  
   
   def from_csv(self, file_source : str):
+    """ Carga un archivo desde un archivo CSV
+    
+    file_source str : nombre del archivo que desea cargar
+    returns objeto de la clase con el dataframe modificado
+    """
     self.data_frame = pd.read_csv(file_source, index_col = 0)
     self.setting()
     return self
 
   def from_data_frame(self, data :np.DataFrame):
+    """ Carga un archivo desde un dataframe
+    
+    data DataFrame : nombre deldatafrae que desea cargar
+    returns objeto de la clase con el dataframe modificado
+    """    
     self.data_frame = data
     self.setting()
     return self
 
   def setting(self):
+    """ Setea los atributos del objeto: número de observaciones,
+    número de características y nombre de las características
+    returns objeto modificado
+    """
       self.num_observations = self.data_frame.shape[0]
       self.num_features = self.data_frame.shape[1]
       self.features_names = self.data_frame.columns 
 
   def view_statistics(self, include : str = None):
+    """ Genera dataframe con las medidas estadísticas 
+    
+    include str : None | categorical
+    returns dataframe con las medidas estadísticas
+    """
     if include == None:
       return self.data_frame.describe()
     if include.lower() == 'categorical':
       return self.data_frame.describe(include = np.object0)
 
   def view_class_distribution(self, column : str):
+    """ Genera dataframe con la frecuencia de valores de una columna
+
+    column str nombre de la columna a procesar
+    returns data frame con la tabla de frecuencia
+    """
     return self.data_frame[column].value_counts()
 
   def view_correlation(self, columns : np.array = None, 
-    style = None, high = 10, width = 10, annot :bool = True):
+    style : bool = False, high = 10, width = 10, annot :bool = True):
+    """ Muestra matriz de correlación de forma gráfica
+
+    columns array : nombre de las columnas a incluir en la matriz
+    style bool : indicador si requiere un gráfico más elaborado
+    high int : alto de la gráfica 
+    width int : ancho de la gráfica
+    annot bool : indicador lógico para saber si se incluye o no la medida de correlación
+    returns None
+    """
     plt.figure(figsize=(high, width))
     data = self.data_frame if columns == None else self.data_frame[columns]
     m_correlation = data.corr()
-    if style == None:
+    if style == False:
       sns.heatmap(m_correlation, annot=annot, cmap='Blues_r')
     else:
       mask = np.zeros_like(m_correlation)
@@ -63,6 +96,13 @@ class DataReview(object):
     plt.show()
 
   def view_correlation_by_two_columns(self, x : str, y : str):
+    """ Muestra gráfico de dispersión entre 2 columnas
+
+    x str : nombre de la columna a incluir en el eje X
+    y str : nombre de la columna a incluir en el eje Y
+
+    returns None
+    """
     fig, ax = plt.subplots(1, 1, figsize=(6,4))
     ax.scatter(x=self.data_frame[x], y=self.data_frame[y], alpha= 0.8)
     plt.title(x.upper() + " versus " + y.upper(), fontsize=18, fontweight = "bold")
@@ -70,12 +110,24 @@ class DataReview(object):
     ax.set_ylabel(y, fontsize=14);
   
   def view_outliers(self, x : str, y : str):
+    """ Muestra gráfico de caja para ver outliers (valores atípicos)
+
+    x str : nombre de la columna asociada al eje X
+    y str : nombre de la columna asociada al eje Y
+    returns None
+    """
     plt.figure(figsize=(10,10))
     sns.boxplot(x=x.lower(), y = y.lower(), data=self.data_frame)
     plt.title("Outliers {}".format(y.capitalize()))
     plt.show()
 
   def view_outliers_by_column(self, x : str):
+    """ Muestra gráfico de dispersión de una columna
+
+    x str : nombre de la columnaa procesar
+
+    returns None
+    """
     x_unique, counts = np.unique(self.data_frame[x], return_counts=True)
     sizes = counts*20
     colors = ['blue']*len(x_unique)
@@ -89,12 +141,25 @@ class DataReview(object):
     plt.show()
 
   def view_graph_interactive(self, x :str, y :str, hover : str):
+    """ Muestra un gráfico interactivo considerando 3 columnas
+
+    x str : nombre de la columna asociada al eje X
+    y str : nombre de la columna asociada al eje Y
+    hover str :nombre de la columna que se mostrará al pasar el mouse por la gráfica
+
+    returns None
+    """
     fig = px.scatter(self.data_frame, x = x, y = y, color = hover,
                  hover_name = self.data_frame[hover].values,  width = 600, height = 600, 
                  labels = {'x' : x, 'y' : y, hover : hover}, title = "{0} para {1} versus {2}".format(hover, x, y))
     fig.show()    
   
   def summary(self):
+    """ Genera un dataframe con información de las columnas de la data indicando
+
+    returns DataFrame conteniendo para cada columna: nombre, tipo, saber si es nulo o no,
+    cantidad de valores nulos
+    """
     d_tipos, d_nulos, d_count = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
     d_tipos['name'] = pd.DataFrame(self.data_frame.dtypes).index
     d_tipos['type'] = pd.DataFrame(self.data_frame.dtypes)[0].values
@@ -108,6 +173,15 @@ class DataReview(object):
     return pd.merge(pd.merge(d_tipos, d_nulos, on = 'name'), d_count, on="name")    
   
   def count_by_column(self, column : str, ordered = False, ascending=True):
+    """ Genera tabla de frecuencia de valores de la columna
+
+    column str : nombre de la columna
+    ordered bool : indicador si desea orden o no
+    ascending bool : indicador si es orden es ascendente
+
+    returns DataFrame con la tabla de frecuencia 
+
+    """
     indexes = self.data_frame.groupby(column)[column].count().index
     values = self.data_frame.groupby(column)[column].count().values
     if ordered:
@@ -116,27 +190,47 @@ class DataReview(object):
   
   def statistics_by_column(self, group_by : str, column : str, 
     metrics : np.array, sorted_by : str = None):
+    """ Genera tabla con estadísticos especificos de una columna agrupados por otra columna
 
+    group_by str : nombre de la columna por la que va a agrupar
+    column str : nombre de la columna sobre la cual se calculan los estadísticos
+    metrics np.array : nombre de los estadísticos a calcular
+    sorted_by bool : indicador si requiere los valores ordenados
+    """
     if sorted_by is None:
       return self.data_frame.groupby(group_by)[column].aggregate(metrics)
     return self.data_frame.groupby(group_by)[column].aggregate(metrics).sort_values(by=sorted_by)
   
   def describe_by_column(self, column : str):
+    """ Genera medidas estadísticas comunes de una columna
+
+    column str : nombre de la columna a procesar
+    """
     return self.data_frame[column].describe()
   
   def get_categorical_features(self):
+    """ Obtener la lista de características categóricas
+
+    returns Lista de las características que son categóricas dentro de la data 
+    """
     tipos = self.data_frame.columns.to_series().groupby(self.data_frame.dtypes).groups
     # Conociendo la lista de columnas categóricas
     return tipos[np.dtype('object')]
   
   def get_numeric_features(self):
+    """ Obtener la lista de características numéricas
+
+    returns Lista de las características que son numéricas dentro de la data 
+    """    
     columnas = self.data_frame.columns
     return list(set(columnas) - set(self.get_categorical_features()))  
 
   def null_treatment(self, which='all', replace_numeric='mean'):
-    """
-      which = 'all' | 'numeric' | 'categorical'
-      replacce_numeric = 'mean' | 'median'
+    """ Tratamiento de los valores nulos
+      which str : indica las columnas a tratar 'all' | 'numeric' | 'categorical'
+      replace_numeric str : indica la medida estadística para reemplazar las columnas numéricas 'mean' | 'median'
+
+    returns cambio en el estado del objeto de acuerdo al tratamiento de nulos
     """
     if which == 'all' or which == 'numeric':
       # Completando valores faltantes datos cuantititavos
@@ -154,7 +248,12 @@ class DataReview(object):
         self.data_frame[columna] = self.data_frame[columna].fillna(mode)    
   
   def view_features_with_null(self):
+    """ Genera tabla con información solo de las columnas con valores nulos
+
+    returns DataFrame con la información de columnas que contienen valores nulos
+    """
     return self.summary()[self.summary().isNull]
+  
   def __str__(self):
     return "Observations : {0}\nFeatures : {1}\nNames features : {2}".format(self.num_observations, 
                                                                             self.num_features, self.features_names)

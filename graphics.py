@@ -6,8 +6,12 @@ import pandas as pd
 import numpy as np
 
 def barplot(values : pd.DataFrame, title :str, labels : np.array):
-  """
+  """ Muestra un gráfico de barras para una columna y sus frecuencias
+
   values : Dataframe que contiene la columna que se quiere graficar y sus frecuencias
+  title str : título de la gráfica
+  labels np.array : lista de los nombres de las etiquetas
+
   """
   # Tamaño del gráfico: (ancho, largo)
   plt.figure(figsize=(8,8))
@@ -23,6 +27,13 @@ def barplot(values : pd.DataFrame, title :str, labels : np.array):
   plt.show() 
 
 def piechart(values : pd.DataFrame, title : str, exp : np.array):
+  """ Muestra una gráfica de torta con los datos de un dataframe
+
+  values DataFrame : contiene los valores a graficar, su shape debe ser de n x 2
+  title str : título de la gráfica
+  exp np.array : lista de proporciones que indica el grado de separación de la porción respecto del total
+
+  """
   frecuencias = values.values.flatten()
   # Etiqueta de cada trozo
   etiquetas = values.index

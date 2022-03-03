@@ -8,10 +8,29 @@ Original file is located at
 """
 
 from sklearn.metrics import mean_squared_error, r2_score
-def selected_features(data_frame, lst_features):
+import pandas as pd
+import numpyas as np
+
+def selected_features(data_frame : pd.DataFrame, lst_features :np.array):
+  """ Retorna un subconjunto a partir de una data
+
+  data_frame : data a procesar
+  lst_features :lista de características que tendrá el subconjunto
+
+  returns Datafame subcojunto del original
+  """
   return data_frame[lst_features]
 
 def metrics_regression(model, X_train, y_train, X_test, y_test, y_pred):
+  """ Genera e imprime las métricas de un modelo de regresión
+
+  model : modelo
+  X_train : data usada en el entrenamiento
+  y_train : target usado en el entrenamiento
+  X_test : data usada en la prueba
+  y_test : target usando en la prueba
+  y_pred : valores de la predicción 
+  """
   print("Train score {}".format(model.score(X_train, y_train)))
   print("Test score {}".format(model.score(X_test, y_test)))    
   print("Model score {}".format(r2_score(y_test, y_pred)))    
