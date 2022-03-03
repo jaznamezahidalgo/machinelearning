@@ -50,7 +50,7 @@ class RegressionModel(object):
     print("\tMSE model : {}".format(mse))
     return train_score, test_score, r2, mse
   
-  def view_equation(self, x_label, y_label):
+  def view_equation(self, x_label : str, y_label : str):
     try:
       plt.scatter(self.X_train, self.y_train, color = 'blue')
       plt.plot(self.X_train, self.model.predict(self.X_train), color = 'black')

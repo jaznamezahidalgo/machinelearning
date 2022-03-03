@@ -23,12 +23,12 @@ class DataReview(object):
   def __setattr__(self, name: str, value):
       self.__dict__[name] = value  
   
-  def from_csv(self, file_source):
+  def from_csv(self, file_source : str):
     self.data_frame = pd.read_csv(file_source, index_col = 0)
     self.setting()
     return self
 
-  def from_data_frame(self, data):
+  def from_data_frame(self, data :np.DataFrame):
     self.data_frame = data
     self.setting()
     return self
@@ -38,16 +38,17 @@ class DataReview(object):
       self.num_features = self.data_frame.shape[1]
       self.features_names = self.data_frame.columns 
 
-  def view_statistics(self, include=None):
+  def view_statistics(self, include : str = None):
     if include == None:
       return self.data_frame.describe()
     if include.lower() == 'categorical':
       return self.data_frame.describe(include = np.object0)
 
-  def view_class_distribution(self, column):
+  def view_class_distribution(self, column : str):
     return self.data_frame[column].value_counts()
 
-  def view_correlation(self, columns = None, style=None, high = 10, width=10, annot = True):
+  def view_correlation(self, columns : np.array = None, 
+    style = None, high = 10, width = 10, annot :bool = True):
     plt.figure(figsize=(high, width))
     data = self.data_frame if columns == None else self.data_frame[columns]
     m_correlation = data.corr()
@@ -61,20 +62,20 @@ class DataReview(object):
     plt.title("Correlación entre las características", fontsize=18, fontweight="bold")
     plt.show()
 
-  def view_correlation_by_two_columns(self, x, y):
+  def view_correlation_by_two_columns(self, x : str, y : str):
     fig, ax = plt.subplots(1, 1, figsize=(6,4))
     ax.scatter(x=self.data_frame[x], y=self.data_frame[y], alpha= 0.8)
     plt.title(x.upper() + " versus " + y.upper(), fontsize=18, fontweight = "bold")
     ax.set_xlabel(x, fontsize=14)
     ax.set_ylabel(y, fontsize=14);
   
-  def view_outliers(self, x, y):
+  def view_outliers(self, x : str, y : str):
     plt.figure(figsize=(10,10))
     sns.boxplot(x=x.lower(), y = y.lower(), data=self.data_frame)
     plt.title("Outliers {}".format(y.capitalize()))
     plt.show()
 
-  def view_outliers_by_column(self, x):
+  def view_outliers_by_column(self, x : str):
     x_unique, counts = np.unique(self.data_frame[x], return_counts=True)
     sizes = counts*20
     colors = ['blue']*len(x_unique)
@@ -87,7 +88,7 @@ class DataReview(object):
     plt.yticks([])
     plt.show()
 
-  def view_graph_interactive(self, x, y, hover):
+  def view_graph_interactive(self, x :str, y :str, hover : str):
     fig = px.scatter(self.data_frame, x = x, y = y, color = hover,
                  hover_name = self.data_frame[hover].values,  width = 600, height = 600, 
                  labels = {'x' : x, 'y' : y, hover : hover}, title = "{0} para {1} versus {2}".format(hover, x, y))
@@ -106,14 +107,16 @@ class DataReview(object):
 
     return pd.merge(pd.merge(d_tipos, d_nulos, on = 'name'), d_count, on="name")    
   
-  def count_by_column(self, column, ordered = False, ascending=True):
+  def count_by_column(self, column : str, ordered = False, ascending=True):
     indexes = self.data_frame.groupby(column)[column].count().index
     values = self.data_frame.groupby(column)[column].count().values
     if ordered:
       return pd.DataFrame(values, columns = ['TOTAL'], index = indexes).sort_values('TOTAL', ascending = ascending)
     return pd.DataFrame(values, columns = ['TOTAL'], index = indexes)
   
-  def statistics_by_column(self, group_by, column, metrics, sorted_by = None):
+  def statistics_by_column(self, group_by : str, column : str, 
+    metrics : np.array, sorted_by : str = None):
+
     if sorted_by is None:
       return self.data_frame.groupby(group_by)[column].aggregate(metrics)
     return self.data_frame.groupby(group_by)[column].aggregate(metrics).sort_values(by=sorted_by)
