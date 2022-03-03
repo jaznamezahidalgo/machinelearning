@@ -20,10 +20,10 @@ class RegressionModel(object):
     self.name = name
 
   def __getattr__(self, name: str):
-      return object.__getattribute__(name)
+    return object.__getattribute__(name)
 
   def __setattr__(self, name: str, value):
-      self.__dict__[name] = value  
+    self.__dict__[name] = value  
 
   def split_data(self, X : array, y : array, with_scaled : bool = False, test_size : float = 0.2):
     """ Divide la data para entrenamiento y prueba
@@ -81,14 +81,14 @@ class RegressionModel(object):
     return train_score, test_score, r2, mse
   
   def view_equation(self, x_label : str, y_label : str):
-  """ Muestra la gráfica de la ecuación de regresión (genera excepción en caso de que el nombre de la columna no exista)
+    """ Muestra la gráfica de la ecuación de regresión (genera excepción en caso de que el nombre de la columna no exista)
 
-  x_label : nombre de la etiqueta del eje X
-  y_label : nombre de la etiqueta del eje Y
+    x_label : nombre de la etiqueta del eje X
+    y_label : nombre de la etiqueta del eje Y
 
-  returns None
+    returns None
 
-  """
+    """
     try:
       plt.scatter(self.X_train, self.y_train, color = 'blue')
       plt.plot(self.X_train, self.model.predict(self.X_train), color = 'black')
