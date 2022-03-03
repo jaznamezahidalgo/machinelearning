@@ -18,10 +18,10 @@ import plotly.express as px
 
 class DataReview(object):
   def __getattr__(self, name: str):
-      return object.__getattribute__(name)
+    return object.__getattribute__(name)
 
   def __setattr__(self, name: str, value):
-      self.__dict__[name] = value  
+    self.__dict__[name] = value  
   
   def from_csv(self, file_source : str):
     """ Carga un archivo desde un archivo CSV
@@ -48,9 +48,9 @@ class DataReview(object):
     número de características y nombre de las características
     returns objeto modificado
     """
-      self.num_observations = self.data_frame.shape[0]
-      self.num_features = self.data_frame.shape[1]
-      self.features_names = self.data_frame.columns 
+    self.num_observations = self.data_frame.shape[0]
+    self.num_features = self.data_frame.shape[1]
+    self.features_names = self.data_frame.columns 
 
   def view_statistics(self, include : str = None):
     """ Genera dataframe con las medidas estadísticas 
