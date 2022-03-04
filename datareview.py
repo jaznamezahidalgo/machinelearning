@@ -72,17 +72,17 @@ class DataReview(object):
     return self.data_frame[column].value_counts()
 
   def view_correlation(self, columns : np.array = None, 
-    style : bool = False, high = 10, width = 10, annot :bool = True):
+    style : bool = False, height : int = 10, width : int = 10, annot :bool = True):
     """ Muestra matriz de correlación de forma gráfica
 
     columns array : nombre de las columnas a incluir en la matriz
     style bool : indicador si requiere un gráfico más elaborado
-    high int : alto de la gráfica 
+    height int : alto de la gráfica 
     width int : ancho de la gráfica
     annot bool : indicador lógico para saber si se incluye o no la medida de correlación
     returns None
     """
-    plt.figure(figsize=(high, width))
+    plt.figure(figsize=(height, width))
     data = self.data_frame if columns == None else self.data_frame[columns]
     m_correlation = data.corr()
     if style == False:
@@ -118,7 +118,7 @@ class DataReview(object):
     """
     plt.figure(figsize=(10,10))
     sns.boxplot(x=x.lower(), y = y.lower(), data=self.data_frame)
-    plt.title("Outliers {}".format(y.capitalize()))
+    plt.title("Outliers {}".format(y.capitalize()), fontsize=18, fontweight = "bold")
     plt.show()
 
   def view_outliers_by_column(self, x : str):
